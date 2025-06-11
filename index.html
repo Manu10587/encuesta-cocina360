@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Cocina360 - Validación de Modelo de Negocio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .intro {
+            background: #f8f9fa;
+            padding: 25px;
+            border-left: 4px solid #FF6B35;
+            margin: 20px;
+            border-radius: 8px;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .section h2 {
+            color: #FF6B35;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FF6B35;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .option input[type="radio"], .option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .price-section {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .equipment-price {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .equipment-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        
+        .price-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .quality-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            background: white;
+        }
+        
+        .quality-header {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .quality-option {
+            text-align: center;
+        }
+        
+        .quality-option input[type="radio"] {
+            transform: scale(1.1);
+        }
+        
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .quality-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .quality-grid .quality-option {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍳 Encuesta Cocina360</h1>
+            <p>Validación de Modelo de Arriendo Operativo</p>
+        </div>
+        
+        <div class="intro">
+            <p><strong>Gracias por participar en esta encuesta.</strong> Cocina360 está desarrollando un nuevo modelo de arriendo operativo de equipamiento gastronómico industrial, que incluye instalación, soporte técnico premium, mantenimiento preventivo y correctivo, y seguro ante fallas o daños.</p>
+            <p>Tu opinión nos ayudará a diseñar una solución alineada a las necesidades reales del sector HORECA (Hoteles, Restaurantes, Casinos y Cafeterías). <strong>La encuesta no toma más de 5 minutos.</strong></p>
+        </div>
+        
+        <form class="form-container" id="encuestaCocina360" action="https://Manu2210.pythonanywhere.com/submit_survey" method="POST">
+            <!-- Sección 1: Información General -->
+            <div class="section">
+                <h2>📋 Sección 1: Información General</h2>
+                
+                <div class="question">
+                    <div class="question-title">1. ¿A qué tipo de establecimiento pertenece tu empresa? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="tipo_establecimiento" value="restaurante" required>
+                            <span>Restaurante</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="tipo_establecimiento" value="casino" required>
+                            <span>Casino de alimentación colectiva</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="tipo_establecimiento" value="hotel" required>
+                            <span>Hotel</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="tipo_establecimiento" value="cafeteria" required>
+                            <span>Cafetería</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="tipo_establecimiento" value="otro" required>
+                            <span>Otro (especificar):</span>
+                            <input type="text" name="tipo_establecimiento_otro" placeholder="Especificar..." style="margin-left: 10px; width: 200px;">
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-title">2. ¿Cuál es tu cargo dentro de la organización? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="cargo" value="dueno" required>
+                            <span>Dueño(a)</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="cargo" value="administrador" required>
+                            <span>Administrador(a)</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="cargo" value="encargado_operaciones" required>
+                            <span>Encargado de operaciones</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="cargo" value="encargado_compras" required>
+                            <span>Encargado de compras</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="cargo" value="gerente" required>
+                            <span>Gerente general o gerente de área</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="cargo" value="otro" required>
+                            <span>Otro:</span>
+                            <input type="text" name="cargo_otro" placeholder="Especificar..." style="margin-left: 10px; width: 200px;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección 2: Renovación y Desafíos Operativos -->
+            <div class="section">
+                <h2>⚙️ Sección 2: Renovación y Desafíos Operativos</h2>
+                
+                <div class="question">
+                    <div class="question-title">3. ¿Con qué frecuencia renuevas el equipamiento gastronómico industrial? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="frecuencia_renovacion" value="1-2_anos" required>
+                            <span>Cada 1 a 2 años</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="frecuencia_renovacion" value="3-4_anos" required>
+                            <span>Cada 3 a 4 años</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="frecuencia_renovacion" value="mas_4_anos" required>
+                            <span>Más de 4 años</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="frecuencia_renovacion" value="solo_fallas" required>
+                            <span>Solo si el equipo falla</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-title">4. ¿Cuáles son los principales problemas que enfrentas al adquirir equipamiento? (marca hasta 3) <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="alto_costo">
+                            <span>Alto costo de inversión inicial</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="falta_financiamiento">
+                            <span>Falta de opciones de financiamiento</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="servicio_deficiente">
+                            <span>Servicio técnico deficiente</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="largos_plazos">
+                            <span>Largos plazos de entrega</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="obsolescencia">
+                            <span>Obsolescencia rápida o fallas recurrentes</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="proveedores_no_confiables">
+                            <span>Dificultad para encontrar proveedores confiables</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="problemas_adquisicion" value="otro">
+                            <span>Otro:</span>
+                            <input type="text" name="problemas_adquisicion_otro" placeholder="Especificar..." style="margin-left: 10px; width: 200px;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección 3: Modelo de Arriendo y Preferencias -->
+            <div class="section">
+                <h2>🏢 Sección 3: Modelo de Arriendo y Preferencias</h2>
+                
+                <div class="question">
+                    <div class="question-title">5. ¿Has considerado arrendar equipos gastronómicos en lugar de comprarlos? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="considerado_arriendo" value="si" required>
+                            <span>Sí</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="considerado_arriendo" value="no" required>
+                            <span>No</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="considerado_arriendo" value="interesa_conocer" required>
+                            <span>No, pero me interesa conocer más</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-title">6. ¿Qué tan importante es para ti contar con un servicio técnico que responda en menos de 24 a 48 horas? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="importancia_servicio_tecnico" value="nada_importante" required>
+                            <span>Nada importante</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="importancia_servicio_tecnico" value="poco_importante" required>
+                            <span>Poco importante</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="importancia_servicio_tecnico" value="importante" required>
+                            <span>Importante</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="importancia_servicio_tecnico" value="muy_importante" required>
+                            <span>Muy importante</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-title">7. ¿Qué tipo de equipamiento considerarías arrendar? (puedes seleccionar más de uno)</div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="lavavajillas">
+                            <span>Lavavajillas industrial (Mesón o Capota)</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="horno_conveccion">
+                            <span>Horno industrial de Convección</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="horno_combinado">
+                            <span>Horno industrial Combinado</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="refrigeracion">
+                            <span>Equipos de refrigeración industrial - Comercial</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="abatidores">
+                            <span>Abatidores de temperatura</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="freidoras_grills">
+                            <span>Freidoras automáticas y grills a gas</span>
+                        </label>
+                        <label class="option">
+                            <input type="checkbox" name="equipamiento_arriendo" value="otros">
+                            <span>Otros (especificar):</span>
+                            <input type="text" name="equipamiento_arriendo_otros" placeholder="Especificar..." style="margin-left: 10px; width: 200px;">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección 4: Preferencias de Precio -->
+            <div class="section">
+                <h2>💰 Sección 4: Preferencias de Precio por Tipo de Equipamiento</h2>
+                <p style="margin-bottom: 20px; color: #666;">Para cada tipo de equipo, indica qué rango de precio mensual considerarías razonable:</p>
+                
+                <div class="price-section">
+                    <div class="equipment-price">
+                        <div class="equipment-title">Lavavajillas industrial (Mesón o Capota):</div>
+                        <div class="price-options">
+                            <label class="option">
+                                <input type="radio" name="precio_lavavajillas" value="medio">
+                                <span>$120.000 - $180.000 CLP (marca rango medio)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="precio_lavavajillas" value="premium">
+                                <span>$200.000 - $280.000 CLP (marca premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-price">
+                        <div class="equipment-title">Horno industrial de Convección:</div>
+                        <div class="price-options">
+                            <label class="option">
+                                <input type="radio" name="precio_horno_conveccion" value="medio">
+                                <span>$140.000 - $190.000 CLP (marca rango medio)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="precio_horno_conveccion" value="premium">
+                                <span>$220.000 - $320.000 CLP (marca premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-price">
+                        <div class="equipment-title">Horno industrial Combinado:</div>
+                        <div class="price-options">
+                            <label class="option">
+                                <input type="radio" name="precio_horno_combinado" value="medio">
+                                <span>$260.000 - $360.000 CLP (marca rango medio)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="precio_horno_combinado" value="premium">
+                                <span>$400.000 - $550.000 CLP (marca premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-price">
+                        <div class="equipment-title">Equipos de refrigeración industrial - Comercial:</div>
+                        <div class="price-options">
+                            <label class="option">
+                                <input type="radio" name="precio_refrigeracion" value="medio">
+                                <span>$120.000 - $180.000 CLP (marca rango medio)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="precio_refrigeracion" value="premium">
+                                <span>$200.000 - $270.000 CLP (marca premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-price">
+                        <div class="equipment-title">Abatidores de temperatura:</div>
+                        <div class="price-options">
+                            <label class="option">
+                                <input type="radio" name="precio_abatidores" value="medio">
+                                <span>$180.000 - $250.000 CLP (marca rango medio)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="precio_abatidores" value="premium">
+                                <span>$280.000 - $380.000 CLP (marca premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-price">
+                        <div class="equipment-title">Freidoras automáticas y grills a gas:</div>
+                        <div class="price-options">
+                            <label class="option">
+                                <input type="radio" name="precio_freidoras_grills" value="medio">
+                                <span>$130.000 - $180.000 CLP (marca rango medio)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="precio_freidoras_grills" value="premium">
+                                <span>$200.000 - $280.000 CLP (marca premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question" style="margin-top: 25px;">
+                    <div class="question-title">8. ¿Te interesaría participar en un piloto con condiciones preferenciales? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="interes_piloto" value="si" required>
+                            <span>Sí</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="interes_piloto" value="no" required>
+                            <span>No</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="interes_piloto" value="depende" required>
+                            <span>Depende de las condiciones</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección 5: Percepción de Calidad -->
+            <div class="section">
+                <h2>🌍 Sección 5: Percepción de Calidad según Origen de Marca</h2>
+                <div class="question">
+                    <div class="question-title">9. ¿Qué percepción tienes de la calidad del equipamiento según su país de origen?</div>
+                    
+                    <div class="quality-grid">
+                        <div class="quality-header">País</div>
+                        <div class="quality-header">Alta</div>
+                        <div class="quality-header">Media</div>
+                        <div class="quality-header">Baja</div>
+                    </div>
+                    
+                    <div class="quality-grid">
+                        <div><strong>Estados Unidos:</strong></div>
+                        <div class="quality-option"><input type="radio" name="calidad_usa" value="alta"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_usa" value="media"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_usa" value="baja"></div>
+                    </div>
+                    
+                    <div class="quality-grid">
+                        <div><strong>Italia:</strong></div>
+                        <div class="quality-option"><input type="radio" name="calidad_italia" value="alta"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_italia" value="media"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_italia" value="baja"></div>
+                    </div>
+                    
+                    <div class="quality-grid">
+                        <div><strong>Francia:</strong></div>
+                        <div class="quality-option"><input type="radio" name="calidad_francia" value="alta"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_francia" value="media"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_francia" value="baja"></div>
+                    </div>
+                    
+                    <div class="quality-grid">
+                        <div><strong>Alemania:</strong></div>
+                        <div class="quality-option"><input type="radio" name="calidad_alemania" value="alta"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_alemania" value="media"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_alemania" value="baja"></div>
+                    </div>
+                    
+                    <div class="quality-grid">
+                        <div><strong>China:</strong></div>
+                        <div class="quality-option"><input type="radio" name="calidad_china" value="alta"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_china" value="media"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_china" value="baja"></div>
+                    </div>
+                    
+                    <div class="quality-grid">
+                        <div>
+                            <strong>Otro:</strong>
+                            <input type="text" name="calidad_otro_pais" placeholder="Especificar país..." style="width: 120px; margin-left: 5px;">
+                        </div>
+                        <div class="quality-option"><input type="radio" name="calidad_otro" value="alta"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_otro" value="media"></div>
+                        <div class="quality-option"><input type="radio" name="calidad_otro" value="baja"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección 6: Contacto y Seguimiento -->
+            <div class="section">
+                <h2>📞 Sección 6: Contacto y Seguimiento</h2>
+                
+                <div class="question">
+                    <div class="question-title">10. ¿Te gustaría que alguien de nuestro equipo te contacte para conocer más o recibir promociones? <span class="required">*</span></div>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="contacto_preferencia" value="llamada" required>
+                            <span>Sí, me gustaría que me llamen</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="contacto_preferencia" value="email" required>
+                            <span>Sí, quiero recibir promociones por correo</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="contacto_preferencia" value="no" required>
+                            <span>No por ahora</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-title">11. Comentarios o sugerencias adicionales:</div>
+                    <textarea name="comentarios" placeholder="Comparte tus comentarios, sugerencias o cualquier información adicional que consideres relevante..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <div class="question-title">12. ¿Deseas dejarnos tu e-mail de contacto para enviarte promociones y beneficios?</div>
+                    <input type="email" name="email_contacto" placeholder="tu-email@ejemplo.com">
+                </div>
+            </div>
+            
+            <div class="submit-container">
+                <button type="submit" class="submit-btn">
+                    ✨ Enviar Encuesta
+                </button>
+                <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+                    Gracias por tu tiempo. Tu opinión es muy valiosa para nosotros.
+                </p>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Validación de máximo 3 checkboxes para problemas de adquisición
+        const problemasCheckboxes = document.querySelectorAll('input[name="problemas_adquisicion"]');
+        
+        problemasCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedBoxes = document.querySelectorAll('input[name="problemas_adquisicion"]:checked');
+                if (checkedBoxes.length > 3) {
+                    this.checked = false;
+                    alert('Puedes seleccionar máximo 3 opciones.');
+                }
+            });
+        });
+
+        // Manejo del formulario
+        document.getElementById('encuestaCocina360').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            console.log('Formulario enviado'); // Debug
+            
+            // Recopilar datos del formulario
+            const formData = new FormData(this);
+            const data = {};
+            
+            // Procesar datos del formulario
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Agregar timestamp y survey_id
+            data.timestamp = new Date().toISOString();
+            data.survey_id = 'COCINA360_' + Date.now();
+            
+            console.log('Datos a enviar:', data); // Debug
+            
+            // Enviar datos como JSON
+            fetch('https://Manu2210.pythonanywhere.com/submit_survey', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Respuesta recibida:', response.status); // Debug
+                return response.json();
+            })
+            .then(result => {
+                console.log('Resultado:', result); // Debug
+                if (result.status === 'success') {
+                    alert('¡Gracias! Tu encuesta ha sido enviada exitosamente. Te contactaremos pronto.');
+                    this.reset();
+                } else {
+                    alert('Error al enviar la encuesta: ' + (result.error || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                console.error('Error completo:', error);
+                alert('Error de conexión. Por favor, intenta nuevamente.');
+            });
+        });
+        
+        // Funcionalidad para mostrar/ocultar campos "Otro"
+        function toggleOtherField(radioName, otherFieldName) {
+            const radios = document.querySelectorAll(`input[name="${radioName}"]`);
+            const otherField = document.querySelector(`input[name="${otherFieldName}"]`);
+            
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'otro' && this.checked) {
+                        otherField.style.display = 'inline-block';
+                        otherField.required = true;
+                    } else if (this.checked) {
+                        otherField.style.display = 'none';
+                        otherField.required = false;
+                        otherField.value = '';
+                    }
+                });
+            });
+        }
+        
+        // Aplicar funcionalidad a campos con "Otro"
+        toggleOtherField('tipo_establecimiento', 'tipo_establecimiento_otro');
+        toggleOtherField('cargo', 'cargo_otro');
+        
+        // Smooth scroll para mejor UX
+        document.querySelectorAll('.section').forEach(section => {
+            section.addEventListener('click', function() {
+                this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    </script>
+</body>
+</html>
